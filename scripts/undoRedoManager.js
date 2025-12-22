@@ -7,8 +7,11 @@ const UndoRedoManager = {
     },
 
     recordState: (e) => {
-        console.log('recording state');
-        console.log(e);
-        //console.log(node.toJSON());
+        const node = e.target;
+        if (!node)
+            return;
+
+        UndoRedoManager.history.push(node.toJSON());
+        console.log(UndoRedoManager.history);
     },
 }
