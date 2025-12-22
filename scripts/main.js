@@ -138,6 +138,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('requestFeature').addEventListener('click', () => {
         openExternalURL('https://github.com/raycastly/texture-ripper/issues/new?template=feature_request.yml');
     });
+
+    // Start detecting ctrl+z and ctrl+shift+z for global undeo and redo actions
+    UndoRedoManager.init();
 });
 
 
