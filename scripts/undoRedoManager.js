@@ -10,7 +10,6 @@ const UndoRedoManager = {
     recordState: (e) => {
         const node = e.target;
         const nodeStage = e.target.parent.parent;
-        console.log(e);
 
         if (!node || !nodeStage)
             return;
@@ -31,10 +30,19 @@ const UndoRedoManager = {
     },
 
     undo: () => {
-        if (UndoRedoManager.currentHistoryIndex < 0)
+        if (UndoRedoManager.currentHistoryIndex <= 0)
             return;
         
         UndoRedoManager.currentHistoryIndex--;
+        console.log("History index is now at: " + UndoRedoManager.currentHistoryIndex);
+        UndoRedoManager.restore();
+    },
+
+    redo: () => {
+        if (UndoRedoManager.currentHistoryIndex >= UndoRedoManager.history.length - 1)
+            return;
+        
+        UndoRedoManager.currentHistoryIndex++;
         console.log("History index is now at: " + UndoRedoManager.currentHistoryIndex);
         UndoRedoManager.restore();
     },
@@ -47,7 +55,6 @@ const UndoRedoManager = {
         const currentHistoryObj = JSON.parse(currentHistoryJson);
         const stage = UndoRedoManager.history[UndoRedoManager.currentHistoryIndex].stage;
         const nodeToRestore = stage.findOne('#' + currentHistoryObj.attrs.id);
-        console.log(nodeToRestore);
         nodeToRestore.x(currentHistoryObj.attrs.x);
         nodeToRestore.y(currentHistoryObj.attrs.y);
     },
@@ -66,6 +73,10 @@ const UndoRedoManager = {
     init: () => {
         document.addEventListener('keydown', (event) => {
             // Check if Ctrl or Command (Mac) is pressed along with 'z'
+            if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key === 'Z') {
+                event.preventDefault();
+                UndoRedoManager.redo();
+            }
             if ((event.ctrlKey || event.metaKey) && event.key === 'z') {
                 event.preventDefault();
                 UndoRedoManager.undo();
