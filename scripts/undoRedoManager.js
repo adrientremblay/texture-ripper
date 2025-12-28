@@ -59,6 +59,8 @@ const UndoRedoManager = {
         nodeToRestore.x(currentHistoryObj.attrs.x);
         nodeToRestore.y(currentHistoryObj.attrs.y);
         nodeToRestore.rotation(currentHistoryObj.attrs.rotation ? currentHistoryObj.attrs.rotation : 0);
+        nodeToRestore.scaleX(currentHistoryObj.attrs.scaleX ? currentHistoryObj.attrs.scaleX : 1.0);
+        nodeToRestore.scaleY(currentHistoryObj.attrs.scaleY ? currentHistoryObj.attrs.scaleY : 1.0);
     },
 
     /**
