@@ -42,6 +42,8 @@ const UndoRedoManager = {
         const stage = UndoRedoManager.history[UndoRedoManager.currentHistoryIndex].stage;
         const nodeToRestore = stage.findOne('#' + currentHistoryObj.attrs.id);
         console.log(nodeToRestore);
+        nodeToRestore.x(currentHistoryObj.attrs.x);
+        nodeToRestore.y(currentHistoryObj.attrs.y);
     },
 
     init: () => {
