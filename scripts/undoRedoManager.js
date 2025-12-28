@@ -15,9 +15,13 @@ const UndoRedoManager = {
         if (!node || !nodeStage)
             return;
 
+        UndoRedoManager.addToHistory(node,nodeStage);
+    },
+
+    addToHistory: (node, stage) => {
         UndoRedoManager.history.push({
             node:  node.toJSON(),
-            stage: nodeStage,
+            stage: stage,
         });
         UndoRedoManager.currentHistoryIndex++;
 

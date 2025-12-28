@@ -351,6 +351,7 @@ const RightPanelManager = {
                         konvaImg.on('dragend', snapping.handleDragEnd);
 
                         UndoRedoManager.registerNode(konvaImg);
+                        UndoRedoManager.addToHistory(konvaImg, stage);
                         
                         imageLayer.add(konvaImg);
                         tiedRects[groupId] = konvaImg;
