@@ -9,15 +9,15 @@ const UndoRedoManager = {
 
     recordState: (e) => {
         const node = e.target;
-        const nodeParent = e.target.parent.canvas;
+        const nodeStage = e.target.parent.parent;
         console.log(e);
 
-        if (!node || !nodeParent)
+        if (!node || !nodeStage)
             return;
 
         UndoRedoManager.history.push({
             node:  node.toJSON(),
-            parent: parent,
+            stage: nodeStage,
         });
         UndoRedoManager.currentHistoryIndex++;
 
@@ -28,10 +28,20 @@ const UndoRedoManager = {
         if (UndoRedoManager.currentHistoryIndex < 0)
             return;
         
-        const historyElement = UndoRedoManager.history[UndoRedoManager.currentHistoryIndex--];
-        //historyElement.parent.create(historyElement.node);
-        Konva.Node.create(historyElement.node);
-        console.log("created node");
+        UndoRedoManager.currentHistoryIndex--;
+        console.log("History index is now at: " + UndoRedoManager.currentHistoryIndex);
+        UndoRedoManager.restore();
+    },
+
+    /**
+     * Restore the element at the current history index
+     */
+    restore: () => {
+        const currentHistoryJson = UndoRedoManager.history[UndoRedoManager.currentHistoryIndex].node;
+        const currentHistoryObj = JSON.parse(currentHistoryJson);
+        const stage = UndoRedoManager.history[UndoRedoManager.currentHistoryIndex].stage;
+        const nodeToRestore = stage.findOne('#' + currentHistoryObj.attrs.id);
+        console.log(nodeToRestore);
     },
 
     init: () => {
