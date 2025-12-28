@@ -19,6 +19,8 @@ const UndoRedoManager = {
     },
 
     addToHistory: (node, stage) => {
+        UndoRedoManager.cleanupHistory();
+
         UndoRedoManager.history.push({
             node:  node.toJSON(),
             stage: stage,
@@ -50,6 +52,17 @@ const UndoRedoManager = {
         nodeToRestore.y(currentHistoryObj.attrs.y);
     },
 
+    /**
+     * Deletes all elements of history after the current history index. This is because if the user undos
+     * some actions then does an action, we dont want to retain the out of date actions in the history.
+     */
+    cleanupHistory: () => {
+        UndoRedoManager.history = UndoRedoManager.history.slice(0, UndoRedoManager.currentHistoryIndex+1);
+    },
+
+    /**
+     * Add event listeners for ctrl+z and ctrl+shift+z
+     */
     init: () => {
         document.addEventListener('keydown', (event) => {
             // Check if Ctrl or Command (Mac) is pressed along with 'z'
