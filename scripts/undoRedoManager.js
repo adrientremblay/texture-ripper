@@ -5,6 +5,7 @@ const UndoRedoManager = {
     
     registerNode: (node) => {
         node.on('dragend', UndoRedoManager.recordState);
+        node.on('transformend', UndoRedoManager.recordState);
     },
 
     recordState: (e) => {
@@ -57,6 +58,7 @@ const UndoRedoManager = {
         const nodeToRestore = stage.findOne('#' + currentHistoryObj.attrs.id);
         nodeToRestore.x(currentHistoryObj.attrs.x);
         nodeToRestore.y(currentHistoryObj.attrs.y);
+        nodeToRestore.rotation(currentHistoryObj.attrs.rotation ? currentHistoryObj.attrs.rotation : 0);
     },
 
     /**
