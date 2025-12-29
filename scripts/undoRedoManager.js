@@ -61,7 +61,6 @@ const UndoRedoManager = {
         }
         
         const action = UndoRedoManager.history[UndoRedoManager.currentHistoryIndex--];
-        console.log(action.start);
 
         const nodeToRestore = action.stage.findOne('#' + action.nodeId);
         if (!nodeToRestore) {
@@ -78,27 +77,26 @@ const UndoRedoManager = {
     },
 
     redo: () => {
-        if (UndoRedoManager.currentHistoryIndex >= UndoRedoManager.history.length - 1)
+        if (UndoRedoManager.currentHistoryIndex >= UndoRedoManager.history.length - 1) {
+            console.error("Nothing to redo!");
             return;
-        
-        UndoRedoManager.currentHistoryIndex++;
-        console.log("History index is now at: " + UndoRedoManager.currentHistoryIndex);
-        UndoRedoManager.restore();
-    },
+        }
 
-    /*
-    restore: () => { // TODO: There are some issues when there are multiple textures
-        const currentHistoryJson = UndoRedoManager.history[UndoRedoManager.currentHistoryIndex].node;
-        const currentHistoryObj = JSON.parse(currentHistoryJson);
-        const stage = UndoRedoManager.history[UndoRedoManager.currentHistoryIndex].stage;
-        const nodeToRestore = stage.findOne('#' + currentHistoryObj.attrs.id);
-        nodeToRestore.x(currentHistoryObj.attrs.x);
-        nodeToRestore.y(currentHistoryObj.attrs.y);
-        nodeToRestore.rotation(currentHistoryObj.attrs.rotation ? currentHistoryObj.attrs.rotation : 0);
-        nodeToRestore.scaleX(currentHistoryObj.attrs.scaleX ? currentHistoryObj.attrs.scaleX : 1.0);
-        nodeToRestore.scaleY(currentHistoryObj.attrs.scaleY ? currentHistoryObj.attrs.scaleY : 1.0);
+        const action = UndoRedoManager.history[++UndoRedoManager.currentHistoryIndex];
+
+        const nodeToRestore = action.stage.findOne('#' + action.nodeId);
+        if (!nodeToRestore) {
+            console.error("Could not find node!");
+            return;
+        }
+        nodeToRestore.x(action.end.x);
+        nodeToRestore.y(action.end.y);
+        nodeToRestore.rotation(action.end.rotation);
+        nodeToRestore.scaleX(action.end.scaleX);
+        nodeToRestore.scaleY(action.end.scaleY);
+        
+        console.log("History index is now at: " + UndoRedoManager.currentHistoryIndex);
     },
-    */
 
     /**
      * Deletes all elements of history after the current history index. This is because if the user undos
