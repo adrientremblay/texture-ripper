@@ -7,7 +7,8 @@ const UndoRedoManager = {
     registerNode: (node) => {
         node.on('dragstart', UndoRedoManager.recordInitialState);
         node.on('dragend', UndoRedoManager.recordAction);
-        //node.on('transformend', UndoRedoManager.recordState);
+        node.on('transformstart', UndoRedoManager.recordInitialState);
+        node.on('transformend', UndoRedoManager.recordAction);
     },
 
     recordInitialState: (e) => {
@@ -30,15 +31,20 @@ const UndoRedoManager = {
         }
 
         const action = {
-            type: 'drag',
             nodeId: startNode.attrs.id,
             start: {
                 x: startNode.attrs.x,
                 y: startNode.attrs.y,
+                rotation: startNode.attrs.rotation ? startNode.attrs.rotation : 0.0,
+                scaleX: startNode.attrs.scaleX ? startNode.attrs.scaleX : 1.0,
+                scaleY: startNode.attrs.scaleY ? startNode.attrs.scaleY : 1.0,
             },
             end: {
                 x: endNode.attrs.x,
                 y: endNode.attrs.y,
+                rotation: endNode.attrs.rotation ? endNode.attrs.rotation : 0.0,
+                scaleX: endNode.attrs.scaleX ? endNode.attrs.scaleX : 1.0,
+                scaleY: endNode.attrs.scaleY ? endNode.attrs.scaleY : 1.0,
             },
             stage: nodeStage,
         }
@@ -47,20 +53,6 @@ const UndoRedoManager = {
         UndoRedoManager.currentHistoryIndex++;
         console.log(action);
     },
-
-    /*
-    addToHistory: (node, stage) => {
-        UndoRedoManager.cleanupHistory();
-
-        UndoRedoManager.history.push({
-            node:  node.toJSON(),
-            stage: stage,
-        });
-        UndoRedoManager.currentHistoryIndex++;
-
-        console.log(UndoRedoManager.history);
-    },
-    */
 
     undo: () => {
         if (UndoRedoManager.currentHistoryIndex < 0) {
@@ -78,6 +70,9 @@ const UndoRedoManager = {
         }
         nodeToRestore.x(action.start.x);
         nodeToRestore.y(action.start.y);
+        nodeToRestore.rotation(action.start.rotation);
+        nodeToRestore.scaleX(action.start.scaleX);
+        nodeToRestore.scaleY(action.start.scaleY);
 
         console.log("History index is now at: " + UndoRedoManager.currentHistoryIndex);
     },
